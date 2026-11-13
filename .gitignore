@@ -18,3 +18,9 @@ backend/.env
 google-credentials.json
 sa.json
 *.pem
+.render_*
+.gcs_*
+.cursor_env_gcs.json
+.render_gcs_env.txt
+.render_update_env.json
+.gcs_one_line.txt
