@@ -1,10 +1,20 @@
-const API_BASE = (
-  import.meta.env.VITE_API_BASE ||
-  (typeof window !== "undefined" &&
-  window.location.hostname.endsWith("onrender.com")
-    ? "https://customer-agent-eval-api.onrender.com"
-    : "")
-).replace(/\/$/, "");
+function resolveApiBase(): string {
+  const fromEnv = (import.meta.env.VITE_API_BASE || "").replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  if (typeof window === "undefined") return "";
+  const host = window.location.hostname;
+  // Production hosts (Render + custom domain) always talk to the Render API.
+  if (
+    host === "evaluation.aibluecascade.org" ||
+    host.endsWith("onrender.com") ||
+    host.endsWith("aibluecascade.org")
+  ) {
+    return "https://customer-agent-eval-api.onrender.com";
+  }
+  return "";
+}
+
+const API_BASE = resolveApiBase();
 
 export type Evaluation = {
   id: string;

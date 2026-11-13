@@ -24,7 +24,11 @@ class Settings(BaseSettings):
     google_credentials_json: str = ""
     google_client_id: str = ""
     google_client_secret: str = ""
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = (
+        "http://localhost:5173,"
+        "https://customer-agent-eval-web.onrender.com,"
+        "https://evaluation.aibluecascade.org"
+    )
     local_audio_dir: str = "./data/audio"
     local_knowledge_dir: str = "./data/knowledge"
     embedding_dimensions: int = 1536
@@ -32,7 +36,17 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        # Browsers never send a trailing slash on Origin; normalize env typos.
+        origins = [o.strip().rstrip("/") for o in self.cors_origins.split(",") if o.strip()]
+        # Always allow known production frontends even if env is incomplete.
+        for required in (
+            "https://customer-agent-eval-web.onrender.com",
+            "https://evaluation.aibluecascade.org",
+            "http://localhost:5173",
+        ):
+            if required not in origins:
+                origins.append(required)
+        return origins
 
     @property
     def use_gcs(self) -> bool:

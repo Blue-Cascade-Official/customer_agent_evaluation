@@ -30,7 +30,7 @@ services:
       - key: GOOGLE_CREDENTIALS_JSON
         sync: false
       - key: CORS_ORIGINS
-        value: https://customer-agent-eval-web.onrender.com,http://localhost:5173
+        value: https://evaluation.aibluecascade.org,https://customer-agent-eval-web.onrender.com,http://localhost:5173
 
   - type: web
     name: customer-agent-eval-web
