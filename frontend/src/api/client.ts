@@ -1,4 +1,10 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+const API_BASE = (
+  import.meta.env.VITE_API_BASE ||
+  (typeof window !== "undefined" &&
+  window.location.hostname.endsWith("onrender.com")
+    ? "https://customer-agent-eval-api.onrender.com"
+    : "")
+).replace(/\/$/, "");
 
 export type Evaluation = {
   id: string;
