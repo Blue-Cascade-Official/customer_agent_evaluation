@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: customer-agent-eval-api
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_AGENT_ID
+        value: agent_8801m754zcqefqatys0hhnr0x82s
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_EMBEDDING_MODEL
+        value: text-embedding-3-small
+      - key: OPENAI_CHAT_MODEL
+        value: gpt-4o-mini
+      - key: GCS_BUCKET
+        value: ai-bcc-calls
+      - key: GCS_PROJECT_ID
+        value: ai-dept-bcc-488708
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: customer-agent-eval-web
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE
+        sync: false
+      - key: VITE_ELEVENLABS_AGENT_ID
+        value: agent_8801m754zcqefqatys0hhnr0x82s
